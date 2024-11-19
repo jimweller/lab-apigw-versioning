@@ -1,0 +1,90 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Star Wars Force Users API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "{invokeUrl}/{basePath}",
+      "variables": {
+        "invokeUrl": {
+          "default": "https://example.execute-api.us-east-1.amazonaws.com"
+        },
+        "basePath": {
+          "default": "v1"
+        }
+      },
+      "region": {
+        "default": "us-east-1"
+      },
+      "stage": {
+        "default": "v1"
+      }
+    }
+  }
+],
+"paths": {
+  "/starwars/forceusers": {
+    "get": {
+      "summary": "Get Force Users",
+      "operationId": "getForceUsers",
+      "responses": {
+        "200": {
+          "description": "A list of Jedi and Sith force users.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "jedis": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "sithLords": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Missing 'force_user' parameter",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "error": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+"components": {
+  "securitySchemes": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+},
+"security": [
+  {
+    "api_key": []
+  }
+]
+}

@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: Star Wars Force Users API
+  version: 1.0.0
+servers:
+  - url: "https://densg3he8k.execute-api.us-east-1.amazonaws.com"
+    variables:
+      invokeUrl:
+        default: "https://example.execute-api.us-east-1.amazonaws.com"
+      basePath:
+        default: "v1"
+paths:
+  /v1/starwars/forceusers:
+    get:
+      summary: Get Jedi Force Users
+      operationId: getJediForceUsersV1
+      responses:
+        '200':
+          description: A list of Jedi force users.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  forceusers:
+                    type: array
+                    items:
+                      type: string
+      x-amazon-apigateway-integration:
+        uri:  arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${aws_region}:${aws_account_id}:function:${lambda_name}v1/invocations
+        passthroughBehavior: WHEN_NO_MATCH
+        httpMethod: POST
+        type: aws_proxy
+      x-amazon-apigateway-auth:
+        type: NONE
+  /v2/starwars/forceusers:
+    get:
+      summary: Get Force Users by Side
+      operationId: getForceUsersV2
+      parameters:
+        - name: side
+          in: query
+          required: true
+          description: Specify the side of the force 'darkside' or 'lightside'
+          schema:
+              type: string
+              enum:
+              - darkside
+              - lightside
+      responses:
+        '200':
+          description: A list of force users based on the specified side.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  forceusers:
+                    type: array
+                    items:
+                      type: string
+        '400':
+          description: Invalid 'side' parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      x-amazon-apigateway-integration:
+        uri:  arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${aws_region}:${aws_account_id}:function:${lambda_name}v2/invocations
+        passthroughBehavior: WHEN_NO_MATCH
+        httpMethod: POST
+        type: aws_proxy
+      x-amazon-apigateway-auth:
+        type: NONE
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: Authorization
+      in: header
+security:
+  - api_key: []
